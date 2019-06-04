@@ -4,7 +4,70 @@
         xmlns:prism="http://prismlibrary.com/"
         prism:ViewModelLocator.AutoWireViewModel="True"
         Title="{Binding Title}" Height="350" Width="525">
+    <Window.Resources>
+        
+        <ContextMenu x:Key="CellContextMenu" StaysOpen="True">
+            <MenuItem Header="Delete" Command="{Binding ClickDelete}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}, Path=PlacementTarget}" />
+        </ContextMenu>
+
+        <Style TargetType="DataGridCell">
+            <Setter Property="ContextMenu" Value="{Binding Source={StaticResource CellContextMenu} }" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=HasChanges}" Value="True">
+                    <Setter Property="FontWeight" Value="Bold" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Path=IsDeleted}" Value="True">
+                    <Setter Property="Background" Value="#F0F0F0" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Path=IsNew}" Value="True">
+                    <Setter Property="FontWeight" Value="Bold" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
     <Grid>
-        <ContentControl prism:RegionManager.RegionName="ContentRegion" />
+        <DockPanel>
+            <ToolBar Name="toolBarPanel1" DockPanel.Dock="Top">
+                <CheckBox Content="Show deleted items?" IsChecked="{Binding ShowDeletedItems}" />
+                <Button Command="{Binding ClickSave}" >Save</Button>
+                <Button Command="{Binding Undo}">Undo</Button>
+            </ToolBar>
+
+            <Border DockPanel.Dock="Left">
+                <ListBox 
+                ItemsSource="{Binding Path=OriginalItems}" Width="200" Background="LightBlue"
+                SelectedItem="{Binding ElementName=dataGridControl1, Path=SelectedItem.Original, Mode=OneWay}"
+                >
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border>
+                                <StackPanel Orientation="Horizontal" Margin="2">
+                                    <TextBlock Text="{Binding Path=FirstName}" Margin="2" />
+                                    <TextBlock Text="{Binding Path=LastName}" Margin="2" />
+                                    <TextBlock Text="{Binding Path=Age}" Margin="2" />
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Border>
+
+
+
+            <DataGrid Name="dataGridControl1" AutoGenerateColumns="False"
+            ItemsSource="{Binding DataSource}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="FirstName" Binding="{Binding FirstName}" />
+                    <DataGridTextColumn Header="LastName" Binding="{Binding LastName}" />
+                    <DataGridTemplateColumn Header="Undo Changes">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="Undo" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type DataGridRow}}, Path=DataContext}" Command="{Binding ClickUndo}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
     </Grid>
 </Window>
