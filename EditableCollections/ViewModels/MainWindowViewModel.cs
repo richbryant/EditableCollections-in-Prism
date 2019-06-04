@@ -1,11 +1,9 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using EditableCollections.Editable;
 using Prism.Commands;
 using Prism.Mvvm;
-using DataRow = System.Data.DataRow;
 
 namespace EditableCollections.ViewModels
 {
@@ -74,11 +72,13 @@ namespace EditableCollections.ViewModels
             {
                 _customerRepository.SaveCustomer(item);
             }
+            RaisePropertyChanged(string.Empty);
         }
 
         private void Undo()
         {
             DataSource.UndoChanges();
+            RaisePropertyChanged(string.Empty);
         }
 
         private void UndoItem(object sender)
@@ -86,6 +86,7 @@ namespace EditableCollections.ViewModels
             if (((Button)sender).CommandParameter is Editable<Customer> item)
             {
                 DataSource.UndoItemChanges(item);
+                RaisePropertyChanged(string.Empty);
             }
         }
 

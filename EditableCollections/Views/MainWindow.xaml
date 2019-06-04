@@ -28,23 +28,21 @@
     <Grid>
         <DockPanel>
             <ToolBar Name="toolBarPanel1" DockPanel.Dock="Top">
-                <CheckBox Content="Show deleted items?" IsChecked="{Binding ShowDeletedItems}" />
+                <CheckBox Content="Show deleted?" IsChecked="{Binding ShowDeletedItems}" />
                 <Button Command="{Binding ClickSave}" >Save</Button>
-                <Button Command="{Binding Undo}">Undo</Button>
+                <Button Command="{Binding ClickUndo}">Undo</Button>
             </ToolBar>
 
             <Border DockPanel.Dock="Left">
                 <ListBox 
-                ItemsSource="{Binding Path=OriginalItems}" Width="200" Background="LightBlue"
-                SelectedItem="{Binding ElementName=dataGridControl1, Path=SelectedItem.Original, Mode=OneWay}"
-                >
+                ItemsSource="{Binding DataSource.OriginalItems}" Width="200" Background="LightBlue">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Border>
                                 <StackPanel Orientation="Horizontal" Margin="2">
-                                    <TextBlock Text="{Binding Path=FirstName}" Margin="2" />
-                                    <TextBlock Text="{Binding Path=LastName}" Margin="2" />
-                                    <TextBlock Text="{Binding Path=Age}" Margin="2" />
+                                    <TextBlock Text="{Binding FirstName}" Margin="2" />
+                                    <TextBlock Text="{Binding LastName}" Margin="2" />
+                                    <TextBlock Text="{Binding Age}" Margin="2" />
                                 </StackPanel>
                             </Border>
                         </DataTemplate>
@@ -54,15 +52,14 @@
 
 
 
-            <DataGrid Name="dataGridControl1" AutoGenerateColumns="False"
-            ItemsSource="{Binding DataSource}">
+            <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding DataSource.EditableItems}">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="FirstName" Binding="{Binding FirstName}" />
-                    <DataGridTextColumn Header="LastName" Binding="{Binding LastName}" />
+                    <DataGridTextColumn IsReadOnly="False" Header="FirstName" Binding="{Binding FirstName}" />
+                    <DataGridTextColumn IsReadOnly="False"  Header="LastName" Binding="{Binding LastName}" />
                     <DataGridTemplateColumn Header="Undo Changes">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <Button Content="Undo" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type DataGridRow}}, Path=DataContext}" Command="{Binding ClickUndo}" />
+                                <Button Content="Undo" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type DataGridRow}}, Path=DataContext}" Command="{Binding ClickUndoItem}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
