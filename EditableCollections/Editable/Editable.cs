@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
+using System.Windows.Input;
 using EditableCollections.Editable.MetaData;
 
 namespace EditableCollections.Editable
@@ -17,6 +18,7 @@ namespace EditableCollections.Editable
         private readonly TWrappedObject _current;
         private bool _isDeleted;
         private bool _isNew;
+        private EditableCommand _reset;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Editable&lt;TWrappedObject&gt;"/> class.
@@ -34,7 +36,10 @@ namespace EditableCollections.Editable
             _changedProperties = new Dictionary<PropertyInfo, object>();
             _current = current;
             _metaData = TypeMetaDataRepository.GetFor(GetType(), typeof(TWrappedObject));
+            _reset = new EditableCommand(ignored => UndoChanges(), ignored => true);
         }
+
+        public ICommand Reset => _reset;
 
         /// <summary>
         /// Gets the current item.

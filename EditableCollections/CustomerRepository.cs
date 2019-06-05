@@ -1,6 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using Bindable.Linq;
-using Bindable.Linq.Interfaces;
 
 namespace EditableCollections
 {
@@ -20,9 +18,9 @@ namespace EditableCollections
             };
         }
 
-        public IBindableCollection<Customer> GetCustomers()
+        public ObservableCollection<Customer> GetCustomers()
         {
-            return _customers.AsBindable();
+            return _customers;
         }
 
         public void SaveCustomer(Customer customer)

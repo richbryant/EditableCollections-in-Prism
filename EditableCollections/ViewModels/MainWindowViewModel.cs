@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using EditableCollections.Editable;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -30,8 +29,8 @@ namespace EditableCollections.ViewModels
 
             ClickSave = new DelegateCommand(Save);
             ClickUndo = new DelegateCommand(Undo);
-            ClickUndoItem = new DelegateCommand<object>(UndoItem, CanSave);
-            ClickDelete = new DelegateCommand<object>(DeleteItem, CanSave);
+            ClickUndoItem = new DelegateCommand(UndoItem);
+            ClickDelete = new DelegateCommand(DeleteItem);
         }
 
         public DelegateCommand ClickCreatingNewItem { get; set; }
@@ -39,14 +38,16 @@ namespace EditableCollections.ViewModels
         public DelegateCommand CancellingNewItem { get; set; }
         public  DelegateCommand ClickSave { get; private set; }
         public DelegateCommand ClickUndo { get; }
-        public DelegateCommand<object> ClickUndoItem { get; }
-        public DelegateCommand<object> ClickDelete { get; }
+        public DelegateCommand ClickUndoItem { get; }
+        public DelegateCommand ClickDelete { get; }
 
 
         private bool CanSave(object arg)
         {
             return DataSource.ChangedItems.Any();
         }
+
+        public Editable<Customer> SelectedPerson { get; set; }= new Editable<Customer>();
 
         public EditableSet<Customer> DataSource { get; }
 
@@ -81,12 +82,11 @@ namespace EditableCollections.ViewModels
             RaisePropertyChanged(string.Empty);
         }
 
-        private void UndoItem(object sender)
+        private void UndoItem()
         {
-            if (((Button)sender).CommandParameter is Editable<Customer> item)
+            if (SelectedPerson.HasChanges)
             {
-                DataSource.UndoItemChanges(item);
-                RaisePropertyChanged(string.Empty);
+                SelectedPerson.UndoChanges();
             }
         }
 
@@ -96,14 +96,11 @@ namespace EditableCollections.ViewModels
         }
 
         
-        private void DeleteItem(object sender)
+        private void DeleteItem()
         {
-            var menuItem = sender as MenuItem;
-            if (!(menuItem?.CommandParameter is DataGridCell cell)) return;
-            var row = cell.Parent as DataGridRow;
-            if (row?.DataContext is Editable<Customer> customer)
+            if (SelectedPerson != null)
             {
-                customer.IsDeleted = true;
+                SelectedPerson.IsDeleted = true;
             }
         }
 

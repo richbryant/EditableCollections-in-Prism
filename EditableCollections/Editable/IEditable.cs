@@ -2,7 +2,7 @@
 
 namespace EditableCollections.Editable
 {
-    internal interface IEditable
+    public interface IEditable
     {
         object WrappedInstance { get; }
         object ReadProperty(PropertyInfo property);

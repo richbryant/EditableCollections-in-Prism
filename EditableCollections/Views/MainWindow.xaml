@@ -7,7 +7,7 @@
     <Window.Resources>
         
         <ContextMenu x:Key="CellContextMenu" StaysOpen="True">
-            <MenuItem Header="Delete" Command="{Binding ClickDelete}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}, Path=PlacementTarget}" />
+            <MenuItem Header="Delete" Command="{Binding ClickDelete}"  />
         </ContextMenu>
 
         <Style TargetType="DataGridCell">
@@ -52,18 +52,22 @@
 
 
 
-            <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding DataSource.EditableItems}">
+            <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding DataSource.EditableItems}"
+                      CanUserDeleteRows="False" SelectedItem="{Binding SelectedPerson, Mode=TwoWay}">
                 <DataGrid.Columns>
                     <DataGridTextColumn IsReadOnly="False" Header="FirstName" Binding="{Binding FirstName}" />
                     <DataGridTextColumn IsReadOnly="False"  Header="LastName" Binding="{Binding LastName}" />
                     <DataGridTemplateColumn Header="Undo Changes">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <Button Content="Undo" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type DataGridRow}}, Path=DataContext}" Command="{Binding ClickUndoItem}" />
+                                <Button Content="Undo" Command="{Binding Reset}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
+                <DataGrid.InputBindings>
+                    <KeyBinding Key="Delete" Command="{Binding ClickDelete}" />
+                </DataGrid.InputBindings>
             </DataGrid>
         </DockPanel>
     </Grid>
